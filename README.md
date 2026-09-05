@@ -1,6 +1,6 @@
 # ProjectMentor
 
-**Live Demo:** [Vercel URL — to be filled after deployment]
+**Live Demo:** https://promptwars-2026-inky.vercel.app
 
 AI-powered mentor for final-year projects. A student enters their interests,
 skills, domain, difficulty, and constraints; the app generates several tailored
