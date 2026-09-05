@@ -12,26 +12,8 @@ export type Profile = z.infer<typeof profileSchema>;
 
 export const DIFFICULTIES = ["Beginner", "Intermediate", "Advanced"] as const;
 
-// ---- Idea (AI output) ----
-export const ideaSchema = z.object({
-  title: z.string().min(1),
-  problem: z.string().min(1),
-  solution: z.string().min(1),
-  whyItFits: z.string().min(1),
-  difficulty: z.string().min(1),
-  estimatedTimeline: z.string().min(1),
-  techStack: z.array(z.string().min(1)).min(1),
-  coreFeatures: z.array(z.string().min(1)).min(1),
-});
-export type Idea = z.infer<typeof ideaSchema>;
-
-export const ideasResponseSchema = z.object({
-  ideas: z.array(ideaSchema).min(1).max(6),
-});
-
-// ---- Mentorship plan (AI output) ----
-export const planSchema = z.object({
-  projectTitle: z.string().min(1),
+// ---- Mentorship blueprint (part of each AI project) ----
+export const blueprintSchema = z.object({
   problemStatement: z.string().min(1),
   solution: z.string().min(1),
   whyThisProject: z.string().min(1),
@@ -42,18 +24,38 @@ export const planSchema = z.object({
   futureScope: z.array(z.string().min(1)).min(1),
   estimatedTimeline: z.string().min(1),
 });
-export type Plan = z.infer<typeof planSchema>;
+export type Blueprint = z.infer<typeof blueprintSchema>;
 
-// ---- Refine (client input) ----
+// ---- Project (AI output): concise selection data + full blueprint ----
+export const projectSchema = z.object({
+  title: z.string().min(1),
+  shortDescription: z.string().min(1),
+  problem: z.string().min(1),
+  solution: z.string().min(1),
+  whyItFits: z.string().min(1),
+  difficulty: z.string().min(1),
+  estimatedTimeline: z.string().min(1),
+  techStack: z.array(z.string().min(1)).min(1),
+  coreFeatures: z.array(z.string().min(1)).min(1),
+  blueprint: blueprintSchema,
+});
+export type Project = z.infer<typeof projectSchema>;
+
+// Exactly three tailored projects per the single generation request.
+export const projectsResponseSchema = z.object({
+  projects: z.array(projectSchema).length(3),
+});
+
+// ---- Refine (client input) — operates on an existing blueprint ----
 export const REFINEMENTS = [
-  "Make it simpler",
+  "Simplify project",
   "Make it more advanced",
-  "Add AI",
+  "Add AI capability",
   "Reduce cost",
-  "Fit a shorter timeline",
+  "Shorten timeline",
 ] as const;
 
 export const refineRequestSchema = z.object({
-  plan: planSchema,
+  blueprint: blueprintSchema,
   refinement: z.enum(REFINEMENTS),
 });

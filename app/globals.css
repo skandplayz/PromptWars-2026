@@ -440,115 +440,89 @@ select {
   border-style: dashed;
 }
 
-/* ---------- Ideas ---------- */
-.ideas-grid {
-  display: grid;
-  grid-template-columns: 1fr;
-  gap: 1.1rem;
-}
-@media (min-width: 680px) {
-  .ideas-grid {
-    grid-template-columns: 1fr 1fr;
-  }
-}
-.idea {
-  display: flex;
-  flex-direction: column;
-  gap: 0.85rem;
-  background: var(--panel);
-  border: 1px solid var(--line);
-  border-radius: var(--r-lg);
-  padding: 1.3rem;
-  transition: border-color 0.15s, box-shadow 0.2s, transform 0.2s;
-}
-.idea:hover {
-  border-color: var(--line-strong);
-  box-shadow: var(--shadow);
-}
-.idea-top {
-  display: flex;
-  flex-direction: column;
-  gap: 0.6rem;
-}
-.idea h3 {
-  font-size: 1.18rem;
-  overflow-wrap: anywhere;
-}
-.idea-lead {
-  font-size: 0.95rem;
-  color: var(--ink);
-  line-height: 1.55;
-}
-.idea-note {
-  font-size: 0.88rem;
-  color: var(--ink-2);
-  display: -webkit-box;
-  -webkit-line-clamp: 2;
-  -webkit-box-orient: vertical;
-  overflow: hidden;
-}
-.idea-note b {
-  color: var(--ink);
-  font-weight: 600;
-}
-.idea-block .block-label {
-  font-size: 0.76rem;
-  font-weight: 600;
-  color: var(--ink-3);
-  margin-bottom: 0.4rem;
-}
-.feature-list {
+/* ---------- Project selection list ---------- */
+.project-list {
   list-style: none;
   margin: 0;
   padding: 0;
   display: flex;
   flex-direction: column;
-  gap: 0.35rem;
+  gap: 1.1rem;
 }
-.feature-list li {
-  position: relative;
-  padding-left: 1.2rem;
-  font-size: 0.88rem;
+.project-row {
+  display: flex;
+  gap: 1.1rem;
+  background: var(--panel);
+  border: 1px solid var(--line);
+  border-radius: var(--r-lg);
+  padding: 1.4rem 1.5rem;
+  transition: border-color 0.15s, box-shadow 0.2s;
+}
+.project-row:hover {
+  border-color: var(--line-strong);
+  box-shadow: var(--shadow);
+}
+.project-index {
+  font-family: var(--font-mono);
+  font-size: 1.05rem;
+  font-weight: 500;
+  color: var(--accent);
+  line-height: 1;
+  padding-top: 0.2rem;
+  flex: none;
+}
+.project-body {
+  display: flex;
+  flex-direction: column;
+  gap: 0.7rem;
+  min-width: 0;
+  flex: 1;
+}
+.project-top {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 0.6rem 1rem;
+  flex-wrap: wrap;
+}
+.project-top h3 {
+  font-size: 1.22rem;
+  overflow-wrap: anywhere;
+}
+.project-desc {
   color: var(--ink-2);
-  line-height: 1.45;
+  font-size: 0.94rem;
+  line-height: 1.55;
+  max-width: 68ch;
 }
-.feature-list li::before {
+.feature-inline {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.3rem 1.1rem;
+}
+.feature-inline li {
+  position: relative;
+  padding-left: 0.95rem;
+  font-size: 0.85rem;
+  color: var(--ink-2);
+}
+.feature-inline li::before {
   content: "";
   position: absolute;
   left: 0;
   top: 0.5em;
-  width: 6px;
-  height: 6px;
+  width: 5px;
+  height: 5px;
   border-radius: 2px;
   background: var(--accent);
   opacity: 0.65;
 }
-.feature-list li.muted {
-  color: var(--ink-3);
-}
-.feature-list li.muted::before {
-  background: var(--ink-3);
-  opacity: 0.5;
-}
-.why {
-  border-left: 2px solid var(--accent);
-  background: var(--accent-wash);
-  border-radius: 0 var(--r-sm) var(--r-sm) 0;
-  padding: 0.6rem 0.75rem;
-  font-size: 0.85rem;
-  color: var(--ink-2);
-  display: -webkit-box;
-  -webkit-line-clamp: 3;
-  -webkit-box-orient: vertical;
-  overflow: hidden;
-}
-.why b {
-  color: var(--accent-ink);
-  font-weight: 600;
-}
-.idea-cta {
-  margin-top: auto;
-  padding-top: 0.4rem;
+.project-row .btn {
+  align-self: flex-start;
+  margin-top: 0.25rem;
 }
 
 /* Skeleton */
@@ -574,19 +548,48 @@ select {
 }
 
 /* ---------- Plan blueprint ---------- */
-.plan-head {
-  margin-bottom: 1.6rem;
-}
 .plan-back {
   margin-bottom: 1rem;
 }
-.plan-head h2 {
-  font-size: clamp(1.7rem, 4vw, 2.3rem);
-  overflow-wrap: anywhere;
-  max-width: 22ch;
+.plan-hero {
+  background: linear-gradient(180deg, var(--accent-wash), var(--panel));
+  border: 1px solid color-mix(in srgb, var(--accent) 22%, var(--line));
+  border-radius: var(--r-lg);
+  padding: clamp(1.4rem, 3vw, 2rem);
+  margin-bottom: 1.5rem;
 }
-.plan-head .meta-row {
-  margin-top: 0.9rem;
+.plan-hero h2 {
+  font-size: clamp(1.7rem, 4vw, 2.4rem);
+  overflow-wrap: anywhere;
+  max-width: 24ch;
+}
+.plan-note {
+  margin-top: 0.55rem;
+  color: var(--ink-2);
+  font-size: 0.95rem;
+}
+.plan-stats {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.5rem 1.4rem;
+  margin-top: 1.25rem;
+  padding-top: 1.25rem;
+  border-top: 1px solid color-mix(in srgb, var(--accent) 15%, var(--line));
+}
+.plan-stats .stat {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  font-size: 0.9rem;
+  color: var(--ink-2);
+}
+.plan-stats .stat b {
+  color: var(--ink);
+  font-weight: 700;
+}
+.plan-stats .stat svg {
+  color: var(--ink-3);
 }
 
 .plan-layout {
@@ -608,8 +611,19 @@ select {
   padding: 1.3rem 1.4rem;
 }
 .block > h3 {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
   font-size: 1.12rem;
-  margin-bottom: 0.7rem;
+  margin-bottom: 0.85rem;
+}
+.block > h3::before {
+  content: "";
+  width: 4px;
+  height: 1.05em;
+  border-radius: 2px;
+  background: var(--accent);
+  flex: none;
 }
 .block > p {
   color: var(--ink-2);
@@ -693,6 +707,18 @@ select {
 }
 .roadmap li:last-child::after {
   display: none;
+}
+.roadmap-stage {
+  display: block;
+  font-family: var(--font-mono);
+  font-size: 0.72rem;
+  font-weight: 500;
+  color: var(--accent-ink);
+  margin-bottom: 0.15rem;
+}
+.roadmap-text {
+  display: block;
+  color: var(--ink-2);
 }
 
 /* Plan side rail */

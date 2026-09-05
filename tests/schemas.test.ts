@@ -1,25 +1,13 @@
 import { test, expect } from "@playwright/test";
 import {
   profileSchema,
-  ideaSchema,
-  ideasResponseSchema,
-  planSchema,
+  projectSchema,
+  projectsResponseSchema,
+  blueprintSchema,
   refineRequestSchema,
 } from "../lib/schemas";
 
-const validIdea = {
-  title: "Smart Irrigation",
-  problem: "Water waste in farms",
-  solution: "IoT soil sensors + control",
-  whyItFits: "Matches IoT + Python skills",
-  difficulty: "Intermediate",
-  estimatedTimeline: "3 months",
-  techStack: ["Python", "MQTT"],
-  coreFeatures: ["Sensor dashboard", "Auto valves"],
-};
-
-const validPlan = {
-  projectTitle: "Smart Irrigation",
+const validBlueprint = {
   problemStatement: "Water waste",
   solution: "IoT control",
   whyThisProject: "Fits skills",
@@ -29,6 +17,19 @@ const validPlan = {
   testingStrategy: ["Unit tests"],
   futureScope: ["ML prediction"],
   estimatedTimeline: "3 months",
+};
+
+const validProject = {
+  title: "Smart Irrigation",
+  shortDescription: "A solo-friendly IoT project that automates farm watering.",
+  problem: "Water waste in farms",
+  solution: "IoT soil sensors + control",
+  whyItFits: "Matches IoT + Python skills",
+  difficulty: "Intermediate",
+  estimatedTimeline: "3 months",
+  techStack: ["Python", "MQTT"],
+  coreFeatures: ["Sensor dashboard", "Auto valves"],
+  blueprint: validBlueprint,
 };
 
 test("profile: accepts valid input", () => {
@@ -57,38 +58,43 @@ test("profile: rejects oversized input (cost/abuse guard)", () => {
   ).toBe(false);
 });
 
-test("idea: accepts a well-formed idea", () => {
-  expect(ideaSchema.safeParse(validIdea).success).toBe(true);
+test("project: accepts a well-formed project with blueprint", () => {
+  expect(projectSchema.safeParse(validProject).success).toBe(true);
 });
 
-test("idea: rejects when a required field is missing", () => {
-  const { techStack, ...missing } = validIdea;
-  expect(ideaSchema.safeParse(missing).success).toBe(false);
+test("project: rejects when the blueprint is missing", () => {
+  const { blueprint, ...missing } = validProject;
+  expect(projectSchema.safeParse(missing).success).toBe(false);
 });
 
-test("idea: rejects empty techStack array", () => {
-  expect(ideaSchema.safeParse({ ...validIdea, techStack: [] }).success).toBe(false);
+test("project: rejects a blueprint missing a required section", () => {
+  const { developmentRoadmap, ...badBlueprint } = validBlueprint;
+  expect(projectSchema.safeParse({ ...validProject, blueprint: badBlueprint }).success).toBe(false);
 });
 
-test("ideas response: bounded to 1-6 ideas", () => {
-  expect(ideasResponseSchema.safeParse({ ideas: [validIdea] }).success).toBe(true);
-  expect(ideasResponseSchema.safeParse({ ideas: [] }).success).toBe(false);
-  expect(ideasResponseSchema.safeParse({ ideas: Array(7).fill(validIdea) }).success).toBe(false);
+test("project: rejects empty techStack array", () => {
+  expect(projectSchema.safeParse({ ...validProject, techStack: [] }).success).toBe(false);
 });
 
-test("plan: accepts a well-formed plan", () => {
-  expect(planSchema.safeParse(validPlan).success).toBe(true);
+test("projects response: requires exactly 3 projects", () => {
+  expect(projectsResponseSchema.safeParse({ projects: [validProject, validProject, validProject] }).success).toBe(true);
+  expect(projectsResponseSchema.safeParse({ projects: [validProject] }).success).toBe(false);
+  expect(projectsResponseSchema.safeParse({ projects: Array(4).fill(validProject) }).success).toBe(false);
 });
 
-test("plan: rejects missing roadmap", () => {
-  const { developmentRoadmap, ...missing } = validPlan;
-  expect(planSchema.safeParse(missing).success).toBe(false);
+test("blueprint: accepts a well-formed blueprint", () => {
+  expect(blueprintSchema.safeParse(validBlueprint).success).toBe(true);
+});
+
+test("blueprint: rejects missing roadmap", () => {
+  const { developmentRoadmap, ...missing } = validBlueprint;
+  expect(blueprintSchema.safeParse(missing).success).toBe(false);
 });
 
 test("refine: rejects unknown refinement option", () => {
-  expect(refineRequestSchema.safeParse({ plan: validPlan, refinement: "nonsense" }).success).toBe(false);
+  expect(refineRequestSchema.safeParse({ blueprint: validBlueprint, refinement: "nonsense" }).success).toBe(false);
 });
 
 test("refine: accepts a known refinement option", () => {
-  expect(refineRequestSchema.safeParse({ plan: validPlan, refinement: "Make it simpler" }).success).toBe(true);
+  expect(refineRequestSchema.safeParse({ blueprint: validBlueprint, refinement: "Simplify project" }).success).toBe(true);
 });
