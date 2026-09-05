@@ -107,6 +107,7 @@ export default function Home() {
 
   return (
     <>
+      <a className="skip-link" href="#main">Skip to content</a>
       <header className="topbar">
         <span className="brand">
           <span className="brand-mark" aria-hidden="true">P</span>
@@ -115,7 +116,7 @@ export default function Home() {
         <span className="brand-tag">Final-year project mentor</span>
       </header>
 
-      <main className={`wrap ${plan ? "wide" : ideas ? "wide" : "narrow"}`}>
+      <main id="main" className={`wrap ${plan ? "wide" : ideas ? "wide" : "narrow"}`}>
         {error && (
           <div className="error" role="alert">
             {error}

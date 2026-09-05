@@ -69,6 +69,27 @@ test("generateStructured: empty output throws GeminiError", async () => {
   await expect(generateStructured("prompt", {}, schema)).rejects.toThrow(/empty response/i);
 });
 
+test("generateStructured: missing API key throws a generic error (no config detail leaked)", async () => {
+  const saved = process.env.GEMINI_API_KEY;
+  delete process.env.GEMINI_API_KEY;
+  try {
+    createImpl = async () => ({ output_text: JSON.stringify({ name: "ok" }) });
+    let caught: unknown;
+    try {
+      await generateStructured("prompt", {}, schema);
+    } catch (e) {
+      caught = e;
+    }
+    expect(caught).toBeInstanceOf(GeminiError);
+    // Client-facing message must not reveal the env var name or server config state.
+    const msg = (caught as Error).message;
+    expect(msg).toMatch(/unavailable right now/i);
+    expect(msg).not.toContain("GEMINI_API_KEY");
+  } finally {
+    process.env.GEMINI_API_KEY = saved;
+  }
+});
+
 // ---------- handleJson ----------
 
 function jsonRequest(body: string): Request {

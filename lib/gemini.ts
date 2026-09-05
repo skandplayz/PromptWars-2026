@@ -6,7 +6,10 @@ const MODEL = "gemini-flash-latest";
 let client: GoogleGenAI | null = null;
 function getClient(): GoogleGenAI {
   const apiKey = process.env.GEMINI_API_KEY;
-  if (!apiKey) throw new GeminiError("GEMINI_API_KEY is not configured on the server.");
+  if (!apiKey) {
+    console.error("GEMINI_API_KEY is not configured on the server.");
+    throw new GeminiError("The AI service is unavailable right now. Please try again.");
+  }
   if (!client) client = new GoogleGenAI({ apiKey });
   return client;
 }
@@ -25,7 +28,7 @@ export async function generateStructured<T>(
 ): Promise<T> {
   const ai = getClient();
 
-  let interaction;
+  let interaction: Awaited<ReturnType<typeof ai.interactions.create>>;
   try {
     interaction = await ai.interactions.create({
       model: MODEL,
